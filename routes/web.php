@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Note;
+use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,28 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/pages/{page}/notes', function (Page $page) {
+    // return $page;
+    return view('add-note', [
+        'page' => $page
+    ]);
+});
+
+Route::post('/pages/{page}/notes', function (Page $page) {
+    $note = new Note();
+    $note->page_id = $page->id;
+    $note->note = request('note');
+    $note->save();
+
+    return 'success';
+});
+
+Route::get('test_page_relation', function(){
+    return Note::first()->page()->get();
+});
+
+Route::get('test_note_relation', function(){
+    return Page::first()->notes()->get();
 });
